@@ -1,29 +1,46 @@
 import { useState } from "react";
 
-function BookCreate({onAddBook,onNavigate}) {
-
+function BookUpdate({books,onUpdateBook,onNavigate}) {
+const[bookCodeSearch,setBookCodeSearch]=useState("");
 const[title,setTitle]=useState("");
 const[bookCode,setBookCode]=useState("");
 const[author,setAuthor]=useState("");
 const[publishDate,setPublishDate]=useState("");
 const[description,setDescription]=useState("");
 
-const saveButton=()=>{
-  if(!title){alert("Book name qeyd olunmayib");return;}
-  if(!bookCode){alert("Book code teyin olunmayib");return;}
+const getBookInfo=()=>{
+  if(!bookCodeSearch){alert("Book code qeyd olunmayib");return;}
 
-  const newProduct={title,bookCode,author,publishDate};
-onAddBook(newProduct);
-alert("Mehsul elave olundu");
+  const product=books.find((p)=>p.bookCode.toLowerCase()===bookCodeSearch.toLowerCase());
+  
+  if(!product){alert("Uygunluq yoxdur ");return;}
 
-onNavigate("list")
-
-setTitle("");
-setAuthor("");
-setBookCode("");
-setPublishDate("");
-setDescription("");
+setTitle(product.title);
+setBookCode(product.bookCode);
+setAuthor(product.author);
+setPublishDate(product.publishDate);
+setDescription(product.description);
 }
+
+const updateBookHandler=()=>{
+
+  if(!title){alert("book name qeyd olunmayib");return;}
+
+  const updated={title,bookCode,publishDate,author,description};
+
+  onUpdateBook(updated);
+  alert("her sey qeyd olundu");
+
+  onNavigate("list");
+  setAuthor("");
+  setBookCode("");
+  setTitle("");
+  setPublishDate("");
+  setDescription("");
+
+  
+
+ }
 
 
   const inputStyle = {
@@ -57,10 +74,37 @@ setDescription("");
     <div style={{ backgroundColor: "#f4f4f4",  width: 600, padding:"20px 40px 20px 20px", borderRadius: 5,
      margin:"10px auto" }}>
       <h1 style={{ textAlign: "center", color: "red", marginBottom: 20 }}>
-        Kitab yaratma sehifesi
+        Kitab Yenileme sehifesi
       </h1>
 
-      <label style={{ padding: 5 }}> Title </label><br />
+
+     <label>Book Code  Search</label>
+      <br />
+      <input
+        type="text"
+        value={bookCodeSearch}
+        onChange={(e) => setBookCodeSearch(e.target.value)}
+        placeholder="Enter book code"
+        style={{ width: "100%", padding: 8, marginBottom: 15 }}/>
+    
+      <button
+        onClick={getBookInfo}
+        style={{
+          backgroundColor: "orange",
+          color: "white",
+          padding: "8px 15px",
+          border: "none",
+          borderRadius: 5,
+          cursor: "pointer",
+          marginBottom: 20}}>
+        Find Book
+      </button><br/>
+
+
+
+
+
+      <label style={{ padding: 5}}> Title </label><br />
       <input style={inputStyle} value={title} onChange={(e)=>setTitle(e.target.value)} type="text" placeholder="Kitab Adi" /><br />
 
       <label style={{ padding: 5 }}> Book Code </label><br />
@@ -75,7 +119,7 @@ setDescription("");
       <label style={{ padding: 5 }}>Description</label><br />
       <textarea style={inputStyle} value={description} onChange={(e)=>setDescription(e.target.value)}  rows={5} placeholder="Tesvir"></textarea><br />
 
-      <button onClick={saveButton} style={buttonStyle}>Save</button>
+      <button onClick={updateBookHandler} style={buttonStyle}>Update</button>
        <button onClick={() => onNavigate("main")} style={backButtonStyle} >
         Back to Main Page
       </button>
@@ -83,4 +127,4 @@ setDescription("");
   );
 }
 
-export default BookCreate;
+export default BookUpdate;
